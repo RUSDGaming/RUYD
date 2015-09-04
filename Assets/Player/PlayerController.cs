@@ -1,0 +1,174 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class PlayerController : MonoBehaviour
+{
+
+	private float speed = 10f;
+
+	private float jumpSpeed = 10f;
+
+	//public Rigidbody body;
+
+	public bool grounded; 
+
+	private float horizontal;
+
+	private BoxCollider boxCollider;
+
+	[SerializeField]
+	private float
+		velY;
+	[SerializeField]
+	private float
+		velX;
+	private float gravity = -15f;
+	[SerializeField]
+	private float
+		groundDistance;
+	private float sideDistance;
+
+	// Use this for initialization
+	void Start ()
+	{	
+		Debug.Log ("Logan is a tool, KappaPride no rage");
+		//body = gameObject.GetComponent<Rigidbody> ();
+		boxCollider = gameObject.GetComponent<BoxCollider> ();
+		groundDistance = boxCollider.size.y / 2f;
+		sideDistance = boxCollider.size.x / 2f - .02f;
+	}
+	
+	// Update is called once per frame
+	void Update ()
+	{
+		//Debug.DrawRay (transform.position, Vector3.down);
+
+		for (int i = -1; i < 2; i++) {
+			Vector3 pos = transform.position;
+			pos = new Vector3 (pos.x, pos.y + (i * groundDistance), pos.z);
+
+			if (velX > 0) {
+				Debug.DrawRay (pos, Vector3.right);
+
+			} else if (velX < 0) {
+				Debug.DrawRay (pos, Vector3.left);
+			}
+		}
+
+		for (int i = -1; i< 2; i++) {
+			Vector3 pos = transform.position;
+			pos = new Vector3 (pos.x + (i * sideDistance), pos.y, pos.z);
+			// check to see if you are hitting the ground.
+			if (velY < 0) {
+				Debug.DrawRay (pos, Vector3.down);
+			}
+
+		}
+
+		horizontal = Input.GetAxisRaw ("Horizontal");
+
+
+		//body.velocity = new Vector3 (horizontal * speed, body.velocity.y, 0);
+		if (Input.GetButtonDown ("Jump") && grounded) {
+			velY = jumpSpeed;
+		}	
+	}
+
+	void FixedUpdate ()
+	{
+
+		DoPhysics ();
+	}
+
+
+	// I made this because we don't need reall physics for our game, besides real physics don't feel right for a platformer... 
+	// lol this is getting complicated fml kappachino
+	void DoPhysics ()
+	{
+		Vector3 vel = new Vector3 (velX * Time.fixedDeltaTime, velY * Time.fixedDeltaTime, 0);
+
+		velX = horizontal * speed;
+
+		for (int i = -1; i< 2; i++) {
+			Vector3 pos = transform.position;
+			pos = new Vector3 (pos.x + (i * sideDistance), pos.y, pos.z);
+			// check to see if you are hitting the ground.
+			RaycastHit hit; 
+
+			if (velY > 0) {
+				if (Physics.Raycast (pos, Vector3.up, out hit)) {
+					if (hit.distance <= groundDistance + velY * Time.fixedDeltaTime) {
+						velY = 0f;
+						vel = new Vector3 (velX * Time.fixedDeltaTime, +hit.distance - groundDistance + 0.01f, 0);
+						break;						
+					} 
+				}
+			}
+
+			//if (velY <= 0) {
+			if (Physics.Raycast (pos, Vector3.down, out hit)) {
+				if (hit.distance <= groundDistance - velY * Time.fixedDeltaTime) {					
+					velY = 0f;
+					grounded = true;
+					vel = new Vector3 (velX * Time.fixedDeltaTime, -hit.distance + groundDistance - 0.01f, 0);
+					break;
+				} else {
+					grounded = false;
+				}	
+			
+			} else {
+				Debug.Log ("3");
+				grounded = false;
+			}	
+			//}
+			
+			vel = new Vector3 (velX * Time.fixedDeltaTime, velY * Time.fixedDeltaTime, 0);
+
+		}
+
+		// dont bother checking for collisions if the character isnt moving... Keepo
+		if (velX != 0) {		
+			for (int i = -1; i < 2; i++) {
+				Vector3 pos = transform.position;
+				pos = new Vector3 (pos.x, pos.y + (i * groundDistance), pos.z);
+				RaycastHit hitSide;
+				if (velX > 0) {
+					if (Physics.Raycast (pos, Vector3.right, out hitSide)) {
+						if (hitSide.distance <= sideDistance + velX * Time.fixedDeltaTime) {
+							vel = new Vector3 (+hitSide.distance - sideDistance - 0.01f, vel.y, 0);
+							velX = 0f;
+							break;
+						}
+					}
+				} else if (velX < 0) {
+
+					if (Physics.Raycast (pos, Vector3.left, out hitSide)) {
+						if (hitSide.distance <= sideDistance - velX * Time.fixedDeltaTime) {
+							vel = new Vector3 (-hitSide.distance + sideDistance + 0.01f, vel.y, 0);
+							velX = 0f;
+							break;
+						}
+					}
+				}
+			}
+		}
+
+	
+		// move the character;
+		transform.Translate (vel);
+
+		if (!grounded) {
+			if (Input.GetButton ("Jump")) {
+				velY += gravity * Time.fixedDeltaTime;
+			} else {
+				velY += gravity * Time.fixedDeltaTime * 2;
+
+			}
+		}
+
+
+
+	}
+
+
+}
