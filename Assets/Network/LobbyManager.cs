@@ -36,9 +36,25 @@ public class LobbyManager : NetworkLobbyManager
 		base.OnClientSceneChanged (conn);
 		Debug.Log ("client scene changed");
 		ChangeTo (null);
+		NetworkCommands[] players = FindObjectsOfType<NetworkCommands> (); 
+		foreach (NetworkCommands go in players) {
+			if (go.isLocalPlayer) {
+				go.CmdIChangedLevel ();
+			}
+		}
+
+	
 
 	}
 
+	public void createPlayer (NetworkConnection conn)
+	{
+		Debug.Log ("creating a player");
+		GameObject player = (GameObject)Instantiate (playerPrefab, Vector3.zero, Quaternion.identity);
+		//	player.GetComponent<Player>().color = Color.red;
+
+		NetworkServer.AddPlayerForConnection (conn, player, (short)conn.connectionId);
+	}
 
 	
 	public void ChangeTo (GameObject newPanel)
@@ -55,5 +71,7 @@ public class LobbyManager : NetworkLobbyManager
 		
 
 	}
+
+
 
 }
