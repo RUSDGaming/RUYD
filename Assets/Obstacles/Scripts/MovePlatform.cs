@@ -10,6 +10,11 @@ public class MovePlatform : MonoBehaviour
 	public float deltaV = 1;
 
 	Vector3 startPos;
+
+	public Vector3 currentPos;
+	public Vector3 previousPos;
+
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -24,6 +29,8 @@ public class MovePlatform : MonoBehaviour
 
 	void FixedUpdate ()
 	{
+		previousPos = this.transform.position;
+
 		Vector3 pos = new Vector3 ();
 		float h = 0;
 		float v = 0;
@@ -36,6 +43,31 @@ public class MovePlatform : MonoBehaviour
 
 		pos = new Vector3 (startPos.x + h, startPos.y + v, transform.position.z);
 		transform.position = pos;
+		currentPos = this.transform.position;
 
 	}
+
+	void OnTriggerEnter (Collider other)
+	{
+		if (other.CompareTag ("Player")) {
+			PlayerController pc = other.GetComponent<PlayerController> ();
+			if (pc != null) {
+				pc.platform = this;
+			}
+		}
+	}
+
+	void OnTriggerExit (Collider other)
+	{
+		if (other.CompareTag ("Player")) {
+			PlayerController pc = other.GetComponent<PlayerController> ();
+			if (pc != null) {
+				pc.platform = null;
+			}
+		}
+
+	}
+
+
+
 }

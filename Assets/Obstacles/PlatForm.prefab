@@ -12,7 +12,7 @@ GameObject:
   - 65: {fileID: 6509046}
   - 23: {fileID: 2307040}
   - 114: {fileID: 11401844}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: PlatForm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69,7 +69,7 @@ BoxCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 126930}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
@@ -85,6 +85,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63e5c3c4cdf0cdc48a4429a247a98e49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Vertical: 0
+  Horizontal: 1
+  deltaH: 1
+  deltaV: 1
+  currentPos: {x: 0, y: 0, z: 0}
+  previousPos: {x: 0, y: 0, z: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
@@ -99,6 +105,18 @@ Prefab:
     - target: {fileID: 0}
       propertyPath: m_LocalScale.y
       value: .5
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: m_LocalPosition.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}

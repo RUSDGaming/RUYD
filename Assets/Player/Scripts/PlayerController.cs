@@ -26,6 +26,8 @@ public class PlayerController : NetworkBehaviour
 		groundDistance;
 	private float sideDistance;
 
+	public MovePlatform platform;
+
 	// Use this for initialization
 	void Start ()
 	{	
@@ -115,7 +117,6 @@ public class PlayerController : NetworkBehaviour
 						if (hitSide.distance <= sideDistance + velX * Time.fixedDeltaTime) {
 							vel = new Vector3 (+hitSide.distance - sideDistance - 0.01f, vel.y, 0);
 							velX = 0f;
-							Debug.Log ("Hit the side");
 							break;
 						}
 					}
@@ -125,7 +126,6 @@ public class PlayerController : NetworkBehaviour
 						if (hitSide.distance <= sideDistance - velX * Time.fixedDeltaTime) {
 							vel = new Vector3 (-hitSide.distance + sideDistance + 0.01f, vel.y, 0);
 							velX = 0f;
-							Debug.Log ("Hit the side");
 							break;
 						}
 					}
@@ -133,6 +133,19 @@ public class PlayerController : NetworkBehaviour
 			}
 		}
 
+
+
+		//Start Platform thing
+		if (platform != null) {
+			Debug.Log ("You are on a platform");
+			// calculate the diff in x the platform has
+			float platformDeltaX = platform.currentPos.x - platform.previousPos.x;
+			float platformDeltaY = platform.currentPos.y - platform.previousPos.y;
+			// add it to the vel.. I should really add the velocity of the platform to the velocity of the player.
+			vel = new Vector3 (vel.x + platformDeltaX, vel.y + platformDeltaY, vel.z);
+
+		}
+		//End Platform Calculations
 	
 		// move the character;
 		transform.Translate (vel);
