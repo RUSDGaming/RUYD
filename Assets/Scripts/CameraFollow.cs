@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 public class CameraFollow : MonoBehaviour
 {
 
-	private Transform playerTransform;
+	public Transform playerTransform;
 	private float maxDeltaX = 5;
 	private float maxDeltaY = 5;
 	// Use this for initialization
@@ -42,19 +42,28 @@ public class CameraFollow : MonoBehaviour
 		}
 
 
-		
+
 		transform.position = new Vector3 (x, y, -10);
 		//Debug.Log ("pos:" + transform.position);
 	}
 
 	public void findPlayer ()
 	{
+		//Debug.Log ("looking for player");
 		GameObject[] players = GameObject.FindGameObjectsWithTag ("Player");
 		foreach (GameObject go in players) {
+			//		PlayerController pc = go.GetComponent<PlayerController> ();
+			DebugPlayerController dpc = go.GetComponent<DebugPlayerController> ();
+			if (dpc != null) {
+				playerTransform = go.transform;
+				break;
+			}
+
 			if (go != null) {
 				NetworkIdentity nv = go.GetComponent<NetworkIdentity> ();
 				if (nv.isLocalPlayer) {
 					playerTransform = go.transform;
+					break;
 				}
 			}
 		}

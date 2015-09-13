@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.Networking;
 
-public class PlayerController : NetworkBehaviour
+public class PlayerController : MonoBehaviour
 {
 
 	private float speed = 10f;
@@ -20,6 +20,7 @@ public class PlayerController : NetworkBehaviour
 	public float velX;
 	public bool grounded; 
 
+
 	private float gravity = -15f;
 	[SerializeField]
 	private float
@@ -36,32 +37,30 @@ public class PlayerController : NetworkBehaviour
 		boxCollider = gameObject.GetComponent<BoxCollider> ();
 		groundDistance = boxCollider.size.y / 2f - .01f;
 		sideDistance = boxCollider.size.x / 2f - .01f;
+
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-
-		if (isLocalPlayer) {
-			horizontal = Input.GetAxisRaw ("Horizontal");
-			if (Input.GetButtonDown ("Jump") && grounded) {
-				velY = jumpSpeed;
-			}	
-		}
 	}
+
 
 	void FixedUpdate ()
 	{
-		if (isLocalPlayer) {
-
-		}
-		DoPhysics ();
 	}
 
+	public void checkControls ()
+	{
+		horizontal = Input.GetAxisRaw ("Horizontal");
+		if (Input.GetButtonDown ("Jump") && grounded) {
+			velY = jumpSpeed;
+		}
+	}
 
 	// I made this because we don't need reall physics for our game, besides real physics don't feel right for a platformer... 
 	// lol this is getting complicated fml kappachino
-	void DoPhysics ()
+	public void DoPhysics ()
 	{
 		Vector3 vel = new Vector3 (velX * Time.fixedDeltaTime, velY * Time.fixedDeltaTime, 0);
 
@@ -94,8 +93,7 @@ public class PlayerController : NetworkBehaviour
 					}
 				} else {
 					grounded = false;
-				}	
-			
+				}			
 			} else {
 				//Debug.Log ("3");
 				grounded = false;
@@ -133,8 +131,6 @@ public class PlayerController : NetworkBehaviour
 			}
 		}
 
-
-
 		//Start Platform thing
 		if (platform != null) {
 			Debug.Log ("You are on a platform");
@@ -166,11 +162,9 @@ public class PlayerController : NetworkBehaviour
 	{
 		for (int i = -1; i < 2; i++) {
 			Vector3 pos = transform.position;
-			pos = new Vector3 (pos.x, pos.y + (i * (groundDistance - .02f)), pos.z);
-			
+			pos = new Vector3 (pos.x, pos.y + (i * (groundDistance - .02f)), pos.z);			
 			if (velX > 0) {
-				Debug.DrawRay (pos, Vector3.right);
-				
+				Debug.DrawRay (pos, Vector3.right);				
 			} else if (velX < 0) {
 				Debug.DrawRay (pos, Vector3.left);
 			}

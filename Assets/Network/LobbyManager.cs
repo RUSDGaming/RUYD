@@ -43,6 +43,13 @@ public class LobbyManager : NetworkLobbyManager
 			}
 		}
 
+
+		
+		// if there is a dbpc in the scene kill it with fire thankyou.
+		DebugPlayerController dbpc = FindObjectOfType (typeof(DebugPlayerController)) as DebugPlayerController;
+		if (dbpc != null) {
+			Destroy (dbpc.gameObject);
+		}
 	
 
 	}
